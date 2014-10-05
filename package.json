@@ -1,0 +1,14 @@
+{
+  "name": "webcam-camelot-server-socket",
+  "description": "",
+  "author": "",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "camelot": "0.0.4",
+    "express": "^4.9.5",
+    "messenger": "0.0.9",
+    "socket.io": "^1.1.0"
+  }
+}
