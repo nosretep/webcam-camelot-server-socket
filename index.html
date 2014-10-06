@@ -10,7 +10,7 @@
 		function init(){
 		    img = document.getElementById("frame");
 		}
-		var socket = io.connect();
+		var socket = io.connect('/picture');
 		socket.on('frame', function(data){
 		    img.src="data:image/jpeg;base64," + data;
 		});

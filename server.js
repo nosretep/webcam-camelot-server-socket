@@ -8,10 +8,14 @@ requirejs([ 'http', 'express', 'socket.io', 'camelot' ],
 
 function(http, express, socketio, camelot) {
 
+	var clients = 0;
 	var app = express();
 	var server = http.createServer(app);
 	var io = socketio.listen(server);
-	io.set('log level', 0);
+		io.set('log level', 0);
+		
+    var pic = io.of('/picture');
+	    pic.on('connection', function(socket) {});
 
 	server.listen(8888);
 
@@ -20,12 +24,16 @@ function(http, express, socketio, camelot) {
 	});
 
 	io.sockets.on('connection', function(socket) {
-		camera.on('frame', function(imagedata) {
-			var image64 = imagedata.toString('base64');
-			socket.emit('frame', image64);
-		});
+        var address = socket.handshake.address;
+        console.log("New connection from " + address.address + ":" + address.port);
+        clients++;
+        socket.on('disconnect', function() {
+            var address = socket.handshake.address;
+            console.log("Client disconnected " + address.address + ":" + address.port);
+            clients--;
+        });
 	});
-
+	
 	var camera = new camelot({
 		'palette' : 'YUYV',
 		'device' : '/dev/video0',
@@ -44,6 +52,11 @@ function(http, express, socketio, camelot) {
 	//      }
 	});
 
+	camera.on('frame', function(imagedata) {
+		var image64 = imagedata.toString('base64');
+        pic.volatile.emit('frame', image64);
+	});
+	
 	camera.on('error', function(error) {
 		console.log(error);
 	});
