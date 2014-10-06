@@ -27,7 +27,7 @@ function(
 		res.sendfile(__dirname + '/index.html');
 	});
 
-    io.sockets.on('connection', function(socket) {
+	io.sockets.on('connection', function(socket) {
 		camera.on('frame', function(imagedata) {
 			var image64 = imagedata.toString('base64');
 			socket.emit('frame', image64);
@@ -52,10 +52,10 @@ function(
 //      }
     });
 
-    camera.on('error', function(error) {
+	camera.on('error', function(error) {
 		console.log(error);
 	});
-
+	
 	camera.grab({
 		'title' : 'Camera0',
 		'font' : 'Arial:12',
