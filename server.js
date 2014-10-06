@@ -23,16 +23,16 @@ function(
 
     server.listen(8888);
 
-    app.get('/', function(req, res){
-      res.sendfile(__dirname + '/index.html');
-    });
-    
-    io.sockets.on('connection', function(socket){
-      camera.on('frame', function(imagedata){
-          var image64 = imagedata.toString('base64');
-          socket.emit('frame', image64);
-      });
-    });
+    app.get('/', function(req, res) {
+		res.sendfile(__dirname + '/index.html');
+	});
+
+    io.sockets.on('connection', function(socket) {
+		camera.on('frame', function(imagedata) {
+			var image64 = imagedata.toString('base64');
+			socket.emit('frame', image64);
+		});
+	});
     
     var camera = new camelot({
       'palette': 'YUYV',
@@ -51,15 +51,15 @@ function(
 //        sharpness : 125
 //      }
     });
-    
-    camera.on('error', function(error){
-      console.log(error);
-    });
-    
-    camera.grab({
-      'title': 'Camera0',
-      'font': 'Arial:12',
-      'frequency': 1
-    });
+
+    camera.on('error', function(error) {
+		console.log(error);
+	});
+
+	camera.grab({
+		'title' : 'Camera0',
+		'font' : 'Arial:12',
+		'frequency' : 1
+	});
 
 });
