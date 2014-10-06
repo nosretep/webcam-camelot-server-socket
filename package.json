@@ -8,7 +8,7 @@
   "dependencies": {
     "camelot": "0.0.4",
     "express": "^4.9.5",
-    "messenger": "0.0.9",
-    "socket.io": "^1.1.0"
+    "socket.io": "^1.1.0",
+    "requirejs": "~2.1.15"
   }
 }
