@@ -6,14 +6,14 @@
 <body onload="init();">
     <img src="" id="frame" style="width:400px; height:300px"/>
     <script type="text/javascript">
-        var img;
+        var img, socket;
         function init(){
             img = document.getElementById("frame");
+            socket = io('http://' + window.location.host + '/picture');
+            socket.on('frame', function(data){
+                img.src="data:image/jpeg;base64," + data;
+            });
         }
-        var socket = io.connect('/picture');
-        socket.on('frame', function(data){
-            img.src="data:image/jpeg;base64," + data;
-        });
     </script>
 </body>
 </html>

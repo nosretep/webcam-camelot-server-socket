@@ -16,12 +16,13 @@ function(http, express, socketio, camelot) {
     io.set('log level', 0);
     var pic = io.of('/picture');
         pic.on('connection', function(socket) {
-    });
+          console.log('connection to /picture');
+        });
 
     server.listen(8888);
 
     app.get('/', function(req, res) {
-        res.sendfile(__dirname + '/index.html');
+        res.sendFile(__dirname + '/index.html');
     });
 
     io.sockets.on('connection', function(socket) {
@@ -55,7 +56,10 @@ function(http, express, socketio, camelot) {
 
     camera.on('frame', function(imagedata) {
         var image64 = imagedata.toString('base64');
-        pic.volatile.emit('frame', image64);
+//        if (pic.volatile) {
+//          pic.volatile.emit('frame', image64);
+//        }
+      pic.emit('frame', image64);
     });
 
     camera.on('error', function(error) {
@@ -65,7 +69,7 @@ function(http, express, socketio, camelot) {
     camera.grab({
         'title' : 'Camera0',
         'font' : 'Arial:12',
-        'frequency' : 1
+        'frequency' : 10
     });
 
 });
