@@ -2,16 +2,27 @@
 <html lang="en">
 <head>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <style type="text/css">
+        img {
+            width: 400px;
+            height: 300px;
+            margin: 10px;
+            display: block;
+        }
+    </style>
 </head>
 <body onload="init();">
-    <img src="" id="frame" style="width:400px; height:300px"/>
     <script type="text/javascript">
-        var img, socket;
+        var socket;
         function init(){
-            img = document.getElementById("frame");
             socket = io('http://' + window.location.host + '/picture');
-            socket.on('frame', function(data){
-                img.src="data:image/jpeg;base64," + data;
+            socket.on('frame.new', function(data) {
+                var frame_key = data;
+                var img = document.createElement('img');
+                document.body.appendChild(img);
+                socket.on(frame_key, function(data){
+                  img.src="data:image/jpeg;base64," + data;
+                });
             });
         }
     </script>

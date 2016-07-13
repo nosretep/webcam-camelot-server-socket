@@ -6,9 +6,11 @@
     "node": "*"
   },
   "dependencies": {
-    "camelot": "0.0.4",
+    "async": "latest",
     "express": "latest",
-    "socket.io": "latest",
-    "requirejs": "~2.1.15"
+    "lodash": "latest",
+    "node-uuid": "^1.4.7",
+    "requirejs": "~2.1.15",
+    "socket.io": "latest"
   }
 }

@@ -1,4 +1,4 @@
-webcam-camelot-server-socket
+webcam-server-socket
 ============================
 
 - Using Linux
