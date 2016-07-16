@@ -4,8 +4,8 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <style type="text/css">
         img {
-            width: 400px;
-            height: 300px;
+            width: 480px;
+            height: 360px;
             margin: 10px;
             display: block;
         }
@@ -13,16 +13,20 @@
 </head>
 <body onload="init();">
     <script type="text/javascript">
-        var socket;
-        function init(){
+        function init() {
+            var socket;
             socket = io('http://' + window.location.host + '/picture');
             socket.on('frame.new', function(data) {
                 var frame_key = data;
-                var img = document.createElement('img');
-                document.body.appendChild(img);
-                socket.on(frame_key, function(data){
-                  img.src="data:image/jpeg;base64," + data;
-                });
+                var img = document.getElementById(frame_key);
+                if (!img) {
+                    img = document.createElement('img');
+                    img.id = frame_key;
+                    document.body.appendChild(img);
+                    socket.on(frame_key, function(data){
+                      img.src="data:image/jpeg;base64," + data;
+                    });
+                }
             });
         }
     </script>

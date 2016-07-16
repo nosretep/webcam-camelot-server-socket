@@ -45,19 +45,25 @@ function(http, express, socketio, async, WebCam) {
 
     var setup_camera = function(device, callback) {
         console.log('Setting up camera ' + device);
-        var camera = WebCam.make_camera({
+        var camera = new WebCam({
+            'verbose': true,
             'palette' : 'YUYV',
             'device' : device,
             'jpeg' : '85',
+            'png' : '1',
             'resolution' : '320x240',
+            'greyscale' : false,
             'title' : device,
             'font' : 'Arial:12',
-            'frequency' : 10,
+            'frequency' : 30,
             'controls' : {
               'brightness' : 128,
               'contrast' : 32,
               'saturation' : 32,
-              'sharpness' : 53
+              'sharpness' : 53,
+              'focus': 'auto',
+              'hue' : 0,
+              'gamma' : 100
             }
         });
 
@@ -74,7 +80,7 @@ function(http, express, socketio, async, WebCam) {
 
         camera.grab();
 
-        setTimeout(callback, 5000)
+        setTimeout(callback, 7500)
     }
 
     var video_devices = process.env.VIDEO_DEVICES.split(',');
