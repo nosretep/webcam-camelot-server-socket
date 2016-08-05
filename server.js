@@ -4,24 +4,36 @@ requirejs.config({
     nodeRequire : require
 });
 
-requirejs([ 'http', 'express', 'socket.io', 'async', 'webcam'],
+requirejs([ 'log4js', 'http', 'express', 'helmet', 'socket.io', 'async', 'webcam'],
 
-function(http, express, socketio, async, WebCam) {
+function(log4js, http, express, helmet, socketio, async, WebCam) {
 
+    var logger = log4js.getLogger();
+
+    process.on('uncaughtException', function(err) {
+      logger.error('Uncaught exception', err);
+    });
+
+    var port = process.env.WEBCAM_PORT || 8889;
     var app = express();
+        app.use(helmet());
+
     var server = http.createServer(app);
-    server.listen(process.env.WEBCAM_PORT || 8889);
+    var io = socketio();
 
     app.get('/', function(req, res) {
         res.sendFile(__dirname + '/index.html');
     });
 
+    io.listen(server);
+    server.listen(port);
+
     var clients = 0;
     var cached_frames = {}
-    var io = socketio.listen(server);
+
     var pic = io.of('/picture');
         pic.on('connection', function(socket) {
-          console.log('Connection to /picture');
+          logger.info('Connection to /picture');
           var frame_keys = Object.keys(cached_frames);
           for (var i = 0; i < frame_keys.length; i++) {
             var frame_key = frame_keys[i];
@@ -34,19 +46,19 @@ function(http, express, socketio, async, WebCam) {
 
     io.sockets.on('connection', function(socket) {
         var address = socket.handshake.address;
-        console.log("New connection from " + address);
+        logger.info("New connection from " + address);
         clients++;
         socket.on('disconnect', function() {
             var address = socket.handshake.address;
-            console.log("Client disconnected " + address);
+            logger.info("Client disconnected " + address);
             clients--;
         });
     });
 
     var setup_camera = function(device, callback) {
-        console.log('Setting up camera ' + device);
+        logger.info('Setting up camera ' + device);
         var camera = new WebCam({
-            'verbose': true,
+            // 'verbose': true,
             'palette' : 'YUYV',
             'device' : device,
             'jpeg' : '85',
@@ -75,12 +87,20 @@ function(http, express, socketio, async, WebCam) {
         });
 
         camera.on('error', function(error) {
-            console.log(error);
+            logger.error(error);
+        });
+
+        camera.on('error.device', function(error) {
+            logger.error(error);
+        });
+
+        camera.on('info.device', function(message) {
+            logger.info(message);
         });
 
         camera.grab();
 
-        setTimeout(callback, 7500)
+        setTimeout(callback, 10000)
     }
 
     var video_devices = process.env.VIDEO_DEVICES.split(',');
@@ -89,7 +109,7 @@ function(http, express, socketio, async, WebCam) {
       setup_camera(video_device, callback);
     }, function (err) {
       if (err) { throw err; }
-      console.log('Cameras are setup');
+      logger.info('Cameras are setup');
     });
 
 });

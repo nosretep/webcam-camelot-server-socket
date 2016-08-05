@@ -1,4 +1,3 @@
 node_modules/
 .project
-true
-false
+nohup.out
