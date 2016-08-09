@@ -20,6 +20,15 @@ define(
 
       var self = this;
       var opts = self.opts;
+
+      var run_again = function() {
+        if (opts.frequency) {
+          setTimeout(function () {
+            grabber();
+          }, 1000 * opts.frequency);
+        }
+      }
+
       var grabber = function () {
 
         var format = ".jpg";
@@ -58,6 +67,8 @@ define(
 
                       // delete the file
                       fs.unlink(filename);
+
+                      run_again();
                     }
                   });
                 }
@@ -69,17 +80,13 @@ define(
             var message = 'device not found (' + opts.device + ').';
             var err = new Error(message);
             self.emit('error.device', err);
+            run_again();
           } else {
             inner_grabber();
           }
 
         });
 
-        if (opts.frequency) {
-          setTimeout(function () {
-            grabber();
-          }, 1000 * opts.frequency);
-        }
       };
 
       grabber();
